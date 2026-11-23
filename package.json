@@ -3,30 +3,48 @@
   "type": "module",
   "version": "0.0.0",
   "private": true,
+  "packageManager": "pnpm@12.21.0",
+  "description": "weapp-vite promotional videos rendered with Remotion",
+  "homepage": "https://github.com/weapp-vite/promo-video#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/weapp-vite/promo-video.git"
+  },
+  "bugs": {
+    "url": "https://github.com/weapp-vite/promo-video/issues"
+  },
+  "engines": {
+    "node": "^22.23.4 || ^24.22.1 || >=26.12.1"
+  },
   "scripts": {
     "studio": "tsx scripts/runner.ts studio",
     "render": "tsx scripts/runner.ts render",
     "render:landscape": "tsx scripts/runner.ts render:landscape",
     "render:portrait": "tsx scripts/runner.ts render:portrait",
     "render:stills": "tsx scripts/runner.ts render:stills",
+    "test": "vitest run --config scripts/validateTimeline.vitest.config.ts",
     "typecheck": "tsc --noEmit",
     "verify": "tsx scripts/runner.ts verify",
     "lint": "eslint ."
   },
   "dependencies": {
-    "@remotion/bundler": "4.0.545",
-    "@remotion/cli": "4.0.545",
-    "@remotion/renderer": "4.0.545",
-    "react": "catalog:",
+    "@remotion/bundler": "4.0.546",
+    "@remotion/cli": "4.0.546",
+    "@remotion/renderer": "4.0.546",
+    "react": "19.3.1",
     "react-dom": "19.3.1",
-    "remotion": "4.0.545",
-    "sharp": "catalog:"
+    "remotion": "4.0.546",
+    "sharp": "^0.35.5"
   },
   "devDependencies": {
-    "@types/node": "catalog:",
-    "@types/react": "catalog:",
+    "@icebreakers/eslint-config": "8.0.20",
+    "@types/node": "^26.6.6",
+    "@types/react": "19.3.0",
     "@types/react-dom": "^19.3.0",
-    "tsx": "catalog:",
-    "typescript": "catalog:"
+    "eslint": "^10.15.0",
+    "eslint-plugin-pnpm": "^1.9.1",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "vitest": "^5.1.1"
   }
 }

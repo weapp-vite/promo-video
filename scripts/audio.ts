@@ -9,7 +9,7 @@ import { normalizeAudio } from './audio/normalize'
 import { compose } from './audio/score'
 import { BPM, SAMPLE_RATE } from './audio/synth'
 
-const repositoryRoot = fileURLToPath(new URL('../../../', import.meta.url))
+const repositoryRoot = fileURLToPath(new URL('../', import.meta.url))
 const defaultOutput = path.join(repositoryRoot, '.cache/promo-video/public/audio')
 // 中文与英文版本共享同一画幅的配乐编排；只生成每种画幅一份音轨。
 const formats = [...new Set(filmSpecs.map(film => film.name))]

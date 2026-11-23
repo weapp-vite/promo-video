@@ -2,38 +2,38 @@
 
 基于 Remotion、React 和 TypeScript 的可重复渲染宣传片工程。采用每镜头 5 秒的快剪节奏：横版 12 个镜头，竖版 6 个镜头，分别编排构图，共享品牌素材。画面为功能演绎，配乐与转场音效由本工程原创合成，无旁白。
 
-| Composition | 语言 | 画幅 | 时长 | 帧率 |
-| --- | --- | --- | --- | --- |
-| `PromoLandscape` | 中文 | 1920 × 1080 | 60 秒 | 60 fps |
-| `PromoPortrait` | 中文 | 1080 × 1920 | 30 秒 | 60 fps |
+| Composition        | 语言    | 画幅        | 时长  | 帧率   |
+| ------------------ | ------- | ----------- | ----- | ------ |
+| `PromoLandscape`   | 中文    | 1920 × 1080 | 60 秒 | 60 fps |
+| `PromoPortrait`    | 中文    | 1080 × 1920 | 30 秒 | 60 fps |
 | `PromoLandscapeEn` | English | 1920 × 1080 | 60 秒 | 60 fps |
-| `PromoPortraitEn` | English | 1080 × 1920 | 30 秒 | 60 fps |
+| `PromoPortraitEn`  | English | 1080 × 1920 | 30 秒 | 60 fps |
 
 ## 使用
 
-在仓库根目录安装依赖后运行。沿用仓库 Node.js 与 pnpm 要求；配乐合成和验收需要 PATH 中可用的 FFmpeg、FFprobe。首次渲染时 Remotion 会按需下载 Chrome Headless Shell，后续使用本地缓存。
+在仓库根目录安装依赖后运行。需要 Node.js 22.23.4 或更高兼容版本、pnpm 12 以及 PATH 中可用的 FFmpeg、FFprobe。首次渲染时 Remotion 会按需下载 Chrome Headless Shell，后续使用本地缓存。
 
 ```bash
 pnpm install
-pnpm --filter @weapp-vite/promo-video studio
+pnpm studio
 ```
 
 推荐交付顺序：
 
 ```bash
-pnpm --filter @weapp-vite/promo-video typecheck
-pnpm --filter @weapp-vite/promo-video lint
-node node_modules/vitest/vitest.mjs run --config tools/promo-video/scripts/validateTimeline.vitest.config.ts
-pnpm --filter @weapp-vite/promo-video render:stills
-pnpm --filter @weapp-vite/promo-video render
-pnpm --filter @weapp-vite/promo-video verify
+pnpm typecheck
+pnpm lint
+pnpm test
+pnpm render:stills
+pnpm render
+pnpm verify
 ```
 
 单独更新一个画幅：
 
 ```bash
-pnpm --filter @weapp-vite/promo-video render:landscape
-pnpm --filter @weapp-vite/promo-video render:portrait
+pnpm render:landscape
+pnpm render:portrait
 ```
 
 渲染器默认最多使用 6 个并行页面，可通过环境变量 `PROMO_RENDER_CONCURRENCY` 设置正整数。需要指定已有 Chromium 时设置 `REMOTION_BROWSER_EXECUTABLE`。验收工具可通过 `FFMPEG_PATH`、`FFPROBE_PATH` 指定可执行文件。所有子进程直接传参，不依赖 shell 拼接。
@@ -42,16 +42,16 @@ pnpm --filter @weapp-vite/promo-video render:portrait
 
 成片与预览保存在仓库根目录 `artifacts/promo-video/`，中间产物保存在 `.cache/promo-video/`，均不纳入 Git。
 
-| 文件 | 内容 |
-| --- | --- |
-| `weapp-vite-landscape.mp4`、`weapp-vite-portrait.mp4` | 中文横版与竖版成片 |
-| `weapp-vite-landscape-en.mp4`、`weapp-vite-portrait-en.mp4` | English 横版与竖版成片 |
-| `cover-landscape.png`、`cover-portrait.png`、`cover-*-en.png` | 四支成片最后一帧的完整分辨率封面 |
-| `storyboard-*.png` | 每支成片 12 / 6 镜头的中点分镜 |
-| `cues-*.png` | 每支成片动作 cue 之后 70 帧的画面联系表 |
-| `transitions-*.png` | 每支成片首尾、首屏 0.5 秒与切点前后帧的联系表 |
-| `frames/<画幅>[-en]/` | 每支成片完整分辨率 PNG 与帧索引 |
-| `verification.json` | 四支成片自动技术验收结果 |
+| 文件                                                          | 内容                                          |
+| ------------------------------------------------------------- | --------------------------------------------- |
+| `weapp-vite-landscape.mp4`、`weapp-vite-portrait.mp4`         | 中文横版与竖版成片                            |
+| `weapp-vite-landscape-en.mp4`、`weapp-vite-portrait-en.mp4`   | English 横版与竖版成片                        |
+| `cover-landscape.png`、`cover-portrait.png`、`cover-*-en.png` | 四支成片最后一帧的完整分辨率封面              |
+| `storyboard-*.png`                                            | 每支成片 12 / 6 镜头的中点分镜                |
+| `cues-*.png`                                                  | 每支成片动作 cue 之后 70 帧的画面联系表       |
+| `transitions-*.png`                                           | 每支成片首尾、首屏 0.5 秒与切点前后帧的联系表 |
+| `frames/<画幅>[-en]/`                                         | 每支成片完整分辨率 PNG 与帧索引               |
+| `verification.json`                                           | 四支成片自动技术验收结果                      |
 
 MP4 使用 H.264、CRF 18、yuv420p、BT.709、AAC 320 kbps / 48 kHz 立体声，并启用 faststart。`render` 顺序渲染四支成片；`render:landscape` 和 `render:portrait` 分别渲染对应画幅的中英文版本。`render:stills` 适合先检查画面布局；素材准备会校验配乐缓存，仅在源码变化或文件缺失时重新合成。
 
@@ -65,12 +65,12 @@ MP4 使用 H.264、CRF 18、yuv420p、BT.709、AAC 320 kbps / 48 kHz 立体声�
 
 时间线固定 60 fps、144 BPM：每拍 25 帧，每镜头 12 拍即 300 帧 / 5 秒。每镜头相对帧 0、100、200 是三个动作 cue，让主要变化落在音乐拍点上。预览选取每镜头中点与各 cue 后 70 帧，便于检查最长 45 帧的动作完成后的内容，并额外保留全片第 30 帧核对首屏 0.5 秒的主标题。调整镜头或 cue 时修改共享时间线；音频缓存指纹包含时间线源码和合成源码，使旧节奏不会被缓存复用。
 
-- Logo 直接取自仓库 `website/public/logo.svg`，素材准备阶段复制到临时静态资源目录，避免维护另一份品牌源文件。
+- `public/logo.svg` 保存宣传片使用的品牌 Logo，素材准备阶段会复制到临时静态资源目录。
 - `public/fonts/NotoSansSC.ttf` 是完整的 [Noto Sans SC](https://github.com/google/fonts/tree/main/ofl/notosanssc) 可变字体，可直接修改中文文案；[JetBrains Mono](https://github.com/JetBrains/JetBrainsMono) 的 `public/fonts/JetBrainsMono.woff2` 用于代码。字体离线加载，OFL 许可随字体保存。
 - `scripts/audio.ts` 与 `scripts/audio/` 生成横版、竖版两套 144 BPM 配乐；同画幅的中英文版本共享对应音轨，避免语言版本改变节奏。配乐包含节拍、和声、旋律与场景音效，没有外部歌曲或采样依赖。配乐说明见 [音频 README](scripts/audio/README.md)。
 - 代码示例遵循 Wevu 的实际 API。画面中的运行效果明确标注为功能演绎，不作为性能测量或 runtime 验收证据。
 
-本工程为私有宣传素材工具，没有业务 `build` / `dev` 脚本，不改变产品运行时或公开 API。
+本工程为宣传素材工具，没有业务 `build` / `dev` 脚本，不改变产品运行时或公开 API。
 
 ## 验收
 

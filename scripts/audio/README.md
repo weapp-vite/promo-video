@@ -9,11 +9,11 @@
 - `mix.ts`：等拍延迟、交叉早反射、低频清理、柔性饱和及片尾淡出。
 - `normalize.ts`：FFmpeg 两遍 EBU R128 归一化，目标 −14 LUFS、真峰值上限 −2 dBTP，为重采样及成片 AAC 编码预留余量；最终成片验收阈值为 ≤ −1 dBTP。
 
-从仓库根目录执行：
+从项目根目录执行：
 
 ```sh
-pnpm exec tsx tools/promo-video/scripts/audio.ts
-pnpm exec tsx tools/promo-video/scripts/audio.ts artifacts/promo-video/audio
+pnpm exec tsx scripts/audio.ts
+pnpm exec tsx scripts/audio.ts artifacts/promo-video/audio
 ```
 
 需要系统 `ffmpeg`。默认在 `.cache/promo-video/public/audio` 生成 `landscape.wav` 与 `portrait.wav`，均为 48 kHz、24 位 PCM、双声道。支持代码调用 `await generateAudio(outputDir)`。节奏与分镜的唯一来源是 `src/timeline.ts`，音频自动读取其中的 `bpm`、`framesPerBeat`、`filmSpecs` 和每镜 `cues` / `energy`。

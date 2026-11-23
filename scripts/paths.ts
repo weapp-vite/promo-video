@@ -14,7 +14,7 @@ export type Film = Omit<typeof filmSpecs[number], 'id' | 'name'> & {
 }
 
 export const projectDir = fileURLToPath(new URL('..', import.meta.url))
-export const repoDir = path.resolve(projectDir, '../..')
+export const repoDir = projectDir
 export const cacheDir = path.join(repoDir, '.cache/promo-video')
 export const publicDir = path.join(cacheDir, 'public')
 export const outputDir = path.join(repoDir, 'artifacts/promo-video')
